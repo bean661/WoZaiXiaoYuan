@@ -109,7 +109,7 @@ class WoZaiXiaoYuanPuncher:
         # 检测当前时间段
         time_now = time.strftime("%H:%M:%S", time.localtime())
         time_list = time_now.split(":")
-        if time_list[0] != '22':
+        if time_list[0] != '14':
             print("不在晚签时间段,请换时间晚签")
             self.status_code = 3
             return False
@@ -153,6 +153,7 @@ class WoZaiXiaoYuanPuncher:
 
         url = "https://student.wozaixiaoyuan.com/sign/doSign.json"
         s = requests.session()
+        self.sign_data = post_data
         r = s.post(url, data=json.dumps(post_data), headers=headers)
         r_json = json.loads(r.text)
         if r_json['code'] == 0:
@@ -225,6 +226,7 @@ if __name__ == '__main__':
         else:
             print("检测到jwsession存在，使用jwsession晚签")
             wzxy.PunchIn()
+        wzxy.sendNotification()
 def main_handler(event, context):
     # 读取配置文件
     configs = utils.processJson("config.json").read()
@@ -244,3 +246,4 @@ def main_handler(event, context):
         else:
             print("检测到jwsession存在，使用jwsession晚签")
             wzxy.PunchIn()
+        wzxy.sendNotification()
