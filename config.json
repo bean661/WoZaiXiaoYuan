@@ -1,0 +1,18 @@
+[
+  {
+    "wozaixiaoyaun_data":{
+      "username": "13259926163",
+      "password": "shao6666",
+      "location":"109.1864633600,34.3656325000"
+    },
+    "pushPlus_data":{
+      "notifyToken" : "4f47906cc85142ae8f8633269780bfe1"
+    },
+    "leanCloud_data":{
+      "appId":"pMzACBqgTGUjYpvTt8XPV8rj-gzGzoHsz",
+      "masterKey": "J8OVOGLo3VQNMEXxgx6kNX8R",
+      "class_name": "Info_xian"
+    },
+    "mark": "xian"
+  }
+]
