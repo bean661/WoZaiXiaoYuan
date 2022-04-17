@@ -5,3 +5,4 @@
 ​		有问题联系视频的QQ群！ 
 改代码适用于部分学校晚上10点到11点的晚检，不能进行早晚检，需要早晚检自己手动改代码或者找我测试修改。
 ![](https://gitee.com/Bean6560/images/raw/master/typora/QQ%E5%9B%BE%E7%89%8720220311233502.jpg)
+![](https://gitee.com/Bean6560/images/raw/master/typora/QQ%E5%9B%BE%E7%89%8720220417221246.jpg)
