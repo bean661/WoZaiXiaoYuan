@@ -181,7 +181,6 @@ class WoZaiXiaoYuanPuncher:
     
     # 推送晚签结果
     def sendNotification(self):
-        notifyTime = utils.getCurrentTime()
         notifyResult = self.getResult()
         # pushplus 推送
         url = 'http://www.pushplus.plus/send'
@@ -191,7 +190,7 @@ class WoZaiXiaoYuanPuncher:
             "晚签项目": "晚签",
             "晚签情况": notifyResult,
             "晚签信息": self.sign_data,
-            "晚签时间": notifyTime,
+            "晚签时间": time.strftime('%Y-%m-%d %H:%M:%S',time.localtime(time.time())),
         }, ensure_ascii=False)
         msg = {
             "token": notifyToken,
