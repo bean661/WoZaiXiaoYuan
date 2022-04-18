@@ -190,7 +190,7 @@ class WoZaiXiaoYuanPuncher:
             "晚签项目": "晚签",
             "晚签情况": notifyResult,
             "晚签信息": self.sign_data,
-            "晚签时间": time.strftime('%Y-%m-%d %H:%M:%S',time.localtime(time.time())),
+            "晚签时间": (datetime.datetime.now() + datetime.timedelta(hours=8)).strftime('%Y-%m-%d %H:%M:%S'),
         }, ensure_ascii=False)
         msg = {
             "token": notifyToken,
