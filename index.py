@@ -8,29 +8,34 @@ from urllib.parse import urlencode
 import leancloud
 import time
 
+
 class leanCloud:
     # 初始化 leanCloud 对象
-    def __init__(self,appId,masterKey,class_name):
-        leancloud.init(appId,master_key = masterKey)
+    def __init__(self, appId, masterKey, class_name):
+        leancloud.init(appId, master_key=masterKey)
         self.obj = leancloud.Query(class_name).first()
-    # 获取 jwsession        
+
+    # 获取 jwsession
     def getJwsession(self):
         return self.obj.get('jwsession')
-    # 设置 jwsession        
-    def setJwsession(self,value):
-        self.obj.set('jwsession',value)
+
+    # 设置 jwsession
+    def setJwsession(self, value):
+        self.obj.set('jwsession', value)
         self.obj.save()
+
     # 判断之前是否保存过地址信息
     def hasAddress(self):
         if self.obj.get('hasAddress') == False or self.obj.get('hasAddress') is None:
             return False
         else:
             return True
+
     # 请求地址信息
-    def requestAddress(self,location,sign_message):
+    def requestAddress(self, location, sign_message):
         # 根据经纬度求具体地址
         url2 = 'https://restapi.amap.com/v3/geocode/regeo'
-        res = utils.geoCode(url2,{
+        res = utils.geoCode(url2, {
             "location": location
         })
         _res = res['regeocode']['addressComponent']
@@ -48,7 +53,7 @@ class leanCloud:
             "signId": sign_message['id'],
         }
         return sign_data
-        
+
 
 class WoZaiXiaoYuanPuncher:
     def __init__(self, item):
@@ -61,13 +66,14 @@ class WoZaiXiaoYuanPuncher:
         # mark 晚签用户昵称
         self.mark = item['mark']
         # 初始化 leanCloud 对象
-        self.leanCloud_obj = leanCloud(self.leanCloud_data['appId'],self.leanCloud_data['masterKey'],self.leanCloud_data['class_name'])
+        self.leanCloud_obj = leanCloud(self.leanCloud_data['appId'], self.leanCloud_data['masterKey'],
+                                       self.leanCloud_data['class_name'])
         # 学校晚签时段
         self.seqs = []
         # 晚签结果
         self.status_code = 0
-        #id 和signid 等self.sign_message
-        self.sign_message =""
+        # id 和signid 等self.sign_message
+        self.sign_message = ""
         # 请求头
         self.header = {
             "Accept-Encoding": "gzip, deflate, br",
@@ -80,16 +86,16 @@ class WoZaiXiaoYuanPuncher:
             "Accept": "application/json, text/plain, */*"
         }
         # signdata  要保存的信息
-        self.sign_data =""
+        self.sign_data = ""
         # 请求体（必须有）
-        self.body = "{}"       
-        
+        self.body = "{}"
 
-    # 登录
+        # 登录
+
     def login(self):
         # 登录接口
         loginUrl = "https://gw.wozaixiaoyuan.com/basicinfo/mobile/login/username"
-        username,password = str(self.data['username']),str(self.data['password'])
+        username, password = str(self.data['username']), str(self.data['password'])
         url = f'{loginUrl}?username={username}&password={password}'
         self.session = requests.session()
         # 登录
@@ -100,25 +106,26 @@ class WoZaiXiaoYuanPuncher:
             self.leanCloud_obj.setJwsession(jwsession)
             return True
         else:
-            print("登录失败，请检查账号信息"+str(res))
+            print("登录失败，请检查账号信息" + str(res))
             self.status_code = 5
             return False
 
-    #判断当前时间段是否可以晚签
+    # 判断当前时间段是否可以晚签
     def timeTF(self):
         # 检测当前时间段
         time_now = time.strftime("%H:%M:%S", time.localtime())
         time_list = time_now.split(":")
-        if time_list[0] != '14':
+        if time_list[0] != '22':
             print("不在晚签时间段,请换时间晚签")
             self.status_code = 3
             return False
         else:
             print("在晚签时间段 开始晚签")
             return True
+
     # 获取晚签列表，符合条件则自动进行晚签
     def PunchIn(self):
-        #先判断 再晚签
+        # 先判断 再晚签
         if self.timeTF():
             headers = {
                 "jwsession": self.leanCloud_obj.getJwsession()
@@ -131,6 +138,7 @@ class WoZaiXiaoYuanPuncher:
             s = requests.session()
             r = s.post(url, data=post_data, headers=headers)
             res = json.loads(r.text)
+            print(res)
             if res['code'] == -10:
                 print('jwsession 无效，尝试账号密码晚签')
                 self.status_code = 4
@@ -141,14 +149,16 @@ class WoZaiXiaoYuanPuncher:
                 else:
                     print("登录失败")
             elif res['code'] == 0:
-                    print("开始晚签")
-                    self.doPunchIn()
-    #晚签
+                self.sign_message = res['data'][0]
+                print("开始晚签")
+                self.doPunchIn()
+
+    # 晚签
     def doPunchIn(self):
         headers = {
             "jwsession": self.leanCloud_obj.getJwsession()
         }
-        post_data = self.leanCloud_obj.requestAddress(self.data['location'],self.sign_message)
+        post_data = self.leanCloud_obj.requestAddress(self.data['location'], self.sign_message)
 
         url = "https://student.wozaixiaoyuan.com/sign/doSign.json"
         s = requests.session()
@@ -177,7 +187,7 @@ class WoZaiXiaoYuanPuncher:
             return "❌ 晚签失败，登录错误，请检查账号信息"
         else:
             return "❌ 晚签失败，发生未知错误"
-    
+
     # 推送晚签结果
     def sendNotification(self):
         notifyResult = self.getResult()
@@ -205,6 +215,8 @@ class WoZaiXiaoYuanPuncher:
         else:
             print("pushplus: " + r)
             print("消息经 pushplus 推送失败，请检查错误信息")
+
+
 if __name__ == '__main__':
     # 读取配置文件
     configs = utils.processJson("config.json").read()
@@ -225,6 +237,8 @@ if __name__ == '__main__':
             print("检测到jwsession存在，使用jwsession晚签")
             wzxy.PunchIn()
         wzxy.sendNotification()
+
+
 def main_handler(event, context):
     # 读取配置文件
     configs = utils.processJson("config.json").read()
