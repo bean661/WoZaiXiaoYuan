@@ -1,6 +1,6 @@
 **目录：**
 
-腾讯云云函数版本：
+阿里云云函数版本：
 
 * 健康打卡：[bean661/WoZaiXiaoYuanPuncher: 我在校园自动健康打卡程序 (github.com)](https://github.com/bean661/WoZaiXiaoYuanPuncher)
 * 日检日报：[bean661/WoZaiXiaoYuanDay: 我在校园 日检日报 (github.com)](https://github.com/bean661/WoZaiXiaoYuanDay)
