@@ -118,7 +118,7 @@ class WoZaiXiaoYuanPuncher:
         if time_list[0] != '22':
             print("不在晚签时间段,请换时间晚签")
             self.status_code = 3
-            return False
+            return True
         else:
             print("在晚签时间段 开始晚签")
             return True
