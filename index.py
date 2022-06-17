@@ -168,9 +168,12 @@ class WoZaiXiaoYuanPuncher:
         if r_json['code'] == 0:
             self.status_code = 1
             print("签到提醒", "签到成功")
+            if self.pushPlus_data['onlyWrongNotify'] == "false":
+                self.sendNotification()
         else:
             self.status_code = 5
             print("签到提醒", "签到失败,返回信息为:" + str(r_json))
+            self.sendNotification()
 
     # 获取晚签结果
     def getResult(self):
@@ -215,47 +218,27 @@ class WoZaiXiaoYuanPuncher:
         else:
             print("pushplus: " + r)
             print("消息经 pushplus 推送失败，请检查错误信息")
-
+def startdk():
+    # 读取配置文件
+    configs = utils.processJson("config.json").read()
+    # 遍历每个用户的账户数据，进行晚签
+    for config in configs:
+        wzxy = WoZaiXiaoYuanPuncher(config)
+        # 如果没有 jwsession，则 登录 + 晚签
+        jwsession = wzxy.leanCloud_obj.getJwsession()
+        if jwsession == "" or jwsession is None:
+            print("使用账号密码登录")
+            loginStatus = wzxy.login()
+            if loginStatus:
+                print("登录成功,开始晚签")
+                wzxy.PunchIn()
+            else:
+                print("登录失败")
+        else:
+            print("检测到jwsession存在，使用jwsession晚签")
+            wzxy.PunchIn()
 
 if __name__ == '__main__':
-    # 读取配置文件
-    configs = utils.processJson("config.json").read()
-    # 遍历每个用户的账户数据，进行晚签
-    for config in configs:
-        wzxy = WoZaiXiaoYuanPuncher(config)
-        # 如果没有 jwsession，则 登录 + 晚签
-        jwsession = wzxy.leanCloud_obj.getJwsession()
-        if jwsession == "" or jwsession is None:
-            print("使用账号密码登录")
-            loginStatus = wzxy.login()
-            if loginStatus:
-                print("登录成功,开始晚签")
-                wzxy.PunchIn()
-            else:
-                print("登录失败")
-        else:
-            print("检测到jwsession存在，使用jwsession晚签")
-            wzxy.PunchIn()
-        wzxy.sendNotification()
-
-
+    startdk()
 def handler(event, context):
-    # 读取配置文件
-    configs = utils.processJson("config.json").read()
-    # 遍历每个用户的账户数据，进行晚签
-    for config in configs:
-        wzxy = WoZaiXiaoYuanPuncher(config)
-        # 如果没有 jwsession，则 登录 + 晚签
-        jwsession = wzxy.leanCloud_obj.getJwsession()
-        if jwsession == "" or jwsession is None:
-            print("使用账号密码登录")
-            loginStatus = wzxy.login()
-            if loginStatus:
-                print("登录成功,开始晚签")
-                wzxy.PunchIn()
-            else:
-                print("登录失败")
-        else:
-            print("检测到jwsession存在，使用jwsession晚签")
-            wzxy.PunchIn()
-        wzxy.sendNotification()
+    startdk()
