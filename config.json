@@ -1,12 +1,30 @@
 [
   {
     "wozaixiaoyaun_data":{
+      "username": "我在校园手机号",
+      "password": "我在校园密码",
+      "location":"打卡经纬度"
+    },
+    "pushPlus_data":{
+      "notifyToken" : "公众号获取的token",
+      "onlyWrongNotify" : "true"
+    },
+    "leanCloud_data":{
+      "appId":"leancloud获取的appid",
+      "masterKey": "leancloud获取的masterKey",
+      "class_name": "用户对应的class 一个用户一个class 不能共用"
+    },
+    "mark": "Bean"
+  },
+  {
+    "wozaixiaoyaun_data":{
       "username": "",
       "password": "",
       "location":""
     },
     "pushPlus_data":{
-      "notifyToken" : ""
+      "notifyToken" : "",
+      "onlyWrongNotify" : "true"
     },
     "leanCloud_data":{
       "appId":"",
