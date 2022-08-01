@@ -18,12 +18,11 @@ def getRandomTemprature(temperature):
 def geoCode(url,params):  
   _params = {
     **params,
-    "key": "819cfa3cf713874e1757cba0b50a0172",         
+    "key": "A3YBZ-NC5RU-MFYVV-BOHND-RO3OT-ABFCR",
   }
   response = requests.get(url=url, params=_params)
   res = json.loads((response.text))
   return res
-
 # 读写 json 文件
 class processJson:
   def __init__(self,path):
